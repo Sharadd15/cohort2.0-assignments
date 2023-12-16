@@ -4,7 +4,15 @@
  * the function should return a promise just like before
  */
 
-function sleep(milliseconds) {
-}
-
-module.exports = sleep;
+function sleep (seconds) {
+    const startTime = new Date();
+    let currTime = new Date();
+    while((currTime - startTime) < 1000*seconds)
+    {
+        currTime = new Date();
+    }
+}   
+let startTime = new Date();
+sleep(10);
+let endTime = new Date();
+console.log( (endTime - startTime)/1000);
