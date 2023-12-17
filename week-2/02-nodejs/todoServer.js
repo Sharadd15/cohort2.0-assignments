@@ -46,4 +46,57 @@
   
   app.use(bodyParser.json());
   
+  const todos = [];
+  var l = 1;
+  app.get('/todos', (req, resp) => {
+    resp.send(todos);
+  });
+
+  app.get('/todos/:id', (req, resp) => {
+    const id = +req.params.id;
+    const todo = todos.find(function(todo) { 
+      return todo.id === id});
+    if(todo)
+      resp.send(todo);
+    else
+      resp.status(404).send();
+  });
+
+  app.post('/todos', (req, resp) => {
+    const body = req.body;
+    body.id = l;
+    ++l;
+    todos.push(body);
+    resp.status(201).send({id: body.id});
+  });
+
+  app.put('/todos/:id', (req, resp) => {
+    const id = +req.params.id;
+    const index = todos.findIndex(todo =>  todo.id === id);
+    if(index !== -1)
+    {
+      todos[index] =  req.body;
+      todos[index].id = id;
+      resp.send();
+    }
+    else
+    {
+      resp.status(404).send();
+    }
+  });
+
+  app.delete('/todos/:id', (req, resp) => {
+    const id = +req.params.id;
+    const index = todos.findIndex(todo => todo.id === id);
+    if(index !== -1)
+    {
+      todos.splice(index, 1);
+      resp.send();
+    }
+    else
+    {
+      resp.status(404).send();
+    }
+  });
+
   module.exports = app;
