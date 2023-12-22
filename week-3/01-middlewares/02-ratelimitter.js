@@ -14,8 +14,25 @@ const app = express();
 let numberOfRequestsForUser = {};
 setInterval(() => {
     numberOfRequestsForUser = {};
-}, 1000)
-
+}, 1000);
+function increaseReqCount(req, resp, next) {
+  console.log(req.headers);
+  var userId = req.headers['user-id'];
+  if(userId in numberOfRequestsForUser)
+  {
+    if(numberOfRequestsForUser[userId] > 4)
+    {
+      resp.status(404).send();
+      return;
+    }
+    else
+      ++numberOfRequestsForUser[userId];
+  }
+  else
+    numberOfRequestsForUser[userId] = 0;
+  next();
+}
+app.use(increaseReqCount);
 app.get('/user', function(req, res) {
   res.status(200).json({ name: 'john' });
 });
@@ -23,5 +40,4 @@ app.get('/user', function(req, res) {
 app.post('/user', function(req, res) {
   res.status(200).json({ msg: 'created dummy user' });
 });
-
 module.exports = app;
